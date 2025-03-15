@@ -1,0 +1,101 @@
+
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+	<title>HTML Template</title>
+
+	<!-- Google font -->
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CVarela+Round" rel="stylesheet">
+
+	<!-- Bootstrap -->
+	<link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css" />
+
+	<!-- Owl Carousel -->
+	<link type="text/css" rel="stylesheet" href="/css/owl.carousel.css" />
+	<link type="text/css" rel="stylesheet" href="/css/owl.theme.default.css" />
+
+	<!-- Magnific Popup -->
+	<link type="text/css" rel="stylesheet" href="/css/magnific-popup.css" />
+
+	<!-- Font Awesome Icon -->
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+	<!-- Custom stlylesheet -->
+	<link type="text/css" rel="stylesheet" href="/css/style.css" />
+</head>
+
+<header id="home">
+    <!-- Background Image -->
+    <div class="bg-img" style="background-image: url('/img/background1.jpg');">
+        <div class="overlay"></div>
+    </div>
+    <!-- /Background Image -->
+
+    <!-- Nav -->
+     <nav id="nav" class="navbar nav-transparent">
+        <div class="container">
+
+            <div class="navbar-header">
+                <div class="navbar-brand">
+                    <a href="#">
+                        <img class="logo" src="/img/logo.png" alt="logo">
+                        <img class="logo-alt" src="/img/logo.png" alt="logo">
+                    </a>
+                </div>
+
+                <div class="nav-collapse">
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- home wrapper -->
+    <div class="home-wrapper">
+        <div class="container">
+            <div class="row">
+
+                <!-- home content -->
+                <div class="col-md-10 col-md-offset-1">
+                    <div class="home-content">
+                        <h2 class="white-text">"Securely Upload, Organize & Share Your Files"</h2>
+                        <p class="white-text">Take control of your files with our powerful upload and sharing system. Easily store documents, images, and other media while keeping track of metadata like upload date, size, and access links. Share your files instantly with secure public URLs and enjoy a hassle-free experience.</p>
+                        <!-- <button class="white-btn">Get Started!</button> -->
+                        <form id="uploadForm" action="/api/upload" method="POST" enctype="multipart/form-data">
+                            <label for="file-upload" class="white-btn">
+                                Upload Files!
+                            </label>
+                            <input type="file" name="file" id="file-upload" style="display: none;" multiple>
+                            <span id="file-name" style="margin-left: 10px;"></span>
+
+                            <button type="submit" id="send-file" style="background-color: green; color: white; padding: 10px 20px; border: none; cursor: pointer; display: none;">
+                                Send File
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <!-- /home content -->
+
+            </div>
+        </div>
+    </div>
+    <!-- /home wrapper -->
+
+</header>
+
+<script>
+    document.getElementById("file-upload").addEventListener("change", function () {
+        let fileName = this.files[0] ? this.files[0].name : "No file chosen";
+        document.getElementById("file-name").textContent = fileName;
+
+        // Show the send button only if a file is selected
+        document.getElementById("send-file").style.display = fileName !== "No file chosen" ? "inline-block" : "none";
+    });
+
+</script>
+
+{{template "footer"}}

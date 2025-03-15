@@ -15,31 +15,40 @@ import (
 func Signup(c *gin.Context) {
 	//Get email and pass from user
 	var body struct {
-		Email    string
-		Password string
+		FirstName       string
+		LastName        string
+		Email           string
+		Password        string
+		ConfirmPassword string
 	}
 
-	if c.Bind(&body) != nil {
+	if err := c.ShouldBind(&body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Failed to read body",
 		})
+		return
+	}
 
+	//confirm pass
+	if body.Password != body.ConfirmPassword {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Passwords do not match"})
 		return
 	}
 
 	//hash pass
-	hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
-
+	hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), bcrypt.DefaultCost)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Failed to hash password",
-		})
-
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to hash password"})
 		return
 	}
 
 	//create user
-	user := models.User{Email: body.Email, Password: string(hash)}
+	user := models.User{
+		FirstName: body.FirstName,
+		LastName:  body.LastName,
+		Email:     body.Email,
+		Password:  string(hash),
+	}
 	result := initializers.DB.Create(&user)
 
 	if result.Error != nil {
@@ -51,7 +60,7 @@ func Signup(c *gin.Context) {
 	}
 
 	//respond
-	c.JSON(http.StatusOK, gin.H{})
+	c.Redirect(http.StatusFound, "/view/login")
 }
 
 func Login(c *gin.Context) {
@@ -61,11 +70,8 @@ func Login(c *gin.Context) {
 		Password string
 	}
 
-	if c.Bind(&body) != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Failed to read body",
-		})
-
+	if err := c.ShouldBind(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to read body"})
 		return
 	}
 
@@ -112,7 +118,7 @@ func Login(c *gin.Context) {
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie("Authorization", tokenString, 36000*24*30, " ", "", false, true)
 
-	c.JSON(http.StatusOK, gin.H{})
+	c.Redirect(http.StatusFound, "/view/index")
 }
 
 func Validate(c *gin.Context) {
@@ -121,4 +127,12 @@ func Validate(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": user,
 	})
+}
+
+func ShowSignupPage(c *gin.Context) {
+	c.HTML(http.StatusOK, "signup.html", nil)
+}
+
+func ShowIndexPage(c *gin.Context) {
+	c.HTML(http.StatusOK, "index.html", nil)
 }
