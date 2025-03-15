@@ -3,6 +3,7 @@ package initializers
 import (
 	"os"
 
+	"github.com/Onkar2104/go/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -17,4 +18,7 @@ func ConnectToDb() {
 	if err != nil {
 		panic("Failed to connect to database!")
 	}
+
+	//automigrations
+	DB.AutoMigrate(&models.User{})
 }
